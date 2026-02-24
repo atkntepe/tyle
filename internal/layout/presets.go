@@ -28,11 +28,11 @@ func twoColumns() Layout {
 		},
 		Steps: []LayoutStep{
 			{Action: ActionSplit, Direction: Right},
-			{Action: ActionFocus, Direction: Left},
+			{Action: ActionFocus, Direction: Previous},
 			{Action: ActionEqualize},
 		},
 		PaneCount:  2,
-		FinalFocus: Left,
+		FinalFocus: Previous,
 	}
 }
 
@@ -50,11 +50,11 @@ func twoRows() Layout {
 		},
 		Steps: []LayoutStep{
 			{Action: ActionSplit, Direction: Down},
-			{Action: ActionFocus, Direction: Up},
+			{Action: ActionFocus, Direction: Previous},
 			{Action: ActionEqualize},
 		},
 		PaneCount:  2,
-		FinalFocus: Up,
+		FinalFocus: Previous,
 	}
 }
 
@@ -96,11 +96,12 @@ func mainRightStack() Layout {
 		Steps: []LayoutStep{
 			{Action: ActionSplit, Direction: Right},
 			{Action: ActionSplit, Direction: Down},
-			{Action: ActionFocus, Direction: Left},
+			{Action: ActionFocus, Direction: Previous},
+			{Action: ActionFocus, Direction: Previous},
 			{Action: ActionEqualize},
 		},
 		PaneCount:  3,
-		FinalFocus: Left,
+		FinalFocus: Previous,
 	}
 }
 
@@ -118,13 +119,13 @@ func leftStackMain() Layout {
 		},
 		Steps: []LayoutStep{
 			{Action: ActionSplit, Direction: Right},
-			{Action: ActionFocus, Direction: Left},
+			{Action: ActionFocus, Direction: Previous},
 			{Action: ActionSplit, Direction: Down},
-			{Action: ActionFocus, Direction: Right},
+			{Action: ActionFocus, Direction: Previous},
 			{Action: ActionEqualize},
 		},
 		PaneCount:  3,
-		FinalFocus: Right,
+		FinalFocus: Previous,
 	}
 }
 
@@ -143,11 +144,12 @@ func mainSideStack() Layout {
 		Steps: []LayoutStep{
 			{Action: ActionSplit, Direction: Right},
 			{Action: ActionSplit, Direction: Down},
-			{Action: ActionFocus, Direction: Left},
+			{Action: ActionFocus, Direction: Previous},
+			{Action: ActionFocus, Direction: Previous},
 			{Action: ActionEqualize},
 		},
 		PaneCount:  3,
-		FinalFocus: Left,
+		FinalFocus: Previous,
 	}
 }
 
@@ -166,13 +168,14 @@ func grid2x2() Layout {
 		Steps: []LayoutStep{
 			{Action: ActionSplit, Direction: Right},
 			{Action: ActionSplit, Direction: Down},
-			{Action: ActionFocus, Direction: Left},
+			{Action: ActionFocus, Direction: Previous},
+			{Action: ActionFocus, Direction: Previous},
 			{Action: ActionSplit, Direction: Down},
-			{Action: ActionFocus, Direction: Up},
+			{Action: ActionFocus, Direction: Previous},
 			{Action: ActionEqualize},
 		},
 		PaneCount:  4,
-		FinalFocus: Up,
+		FinalFocus: Previous,
 	}
 }
 
@@ -191,11 +194,12 @@ func mainTopTwoBottom() Layout {
 		Steps: []LayoutStep{
 			{Action: ActionSplit, Direction: Down},
 			{Action: ActionSplit, Direction: Right},
-			{Action: ActionFocus, Direction: Up},
+			{Action: ActionFocus, Direction: Previous},
+			{Action: ActionFocus, Direction: Previous},
 			{Action: ActionEqualize},
 		},
 		PaneCount:  3,
-		FinalFocus: Up,
+		FinalFocus: Previous,
 	}
 }
 
@@ -213,13 +217,13 @@ func twoTopOneBottom() Layout {
 		},
 		Steps: []LayoutStep{
 			{Action: ActionSplit, Direction: Down},
-			{Action: ActionFocus, Direction: Up},
+			{Action: ActionFocus, Direction: Previous},
 			{Action: ActionSplit, Direction: Right},
-			{Action: ActionFocus, Direction: Left},
+			{Action: ActionFocus, Direction: Previous},
 			{Action: ActionEqualize},
 		},
 		PaneCount:  3,
-		FinalFocus: Left,
+		FinalFocus: Previous,
 	}
 }
 
@@ -237,14 +241,14 @@ func threeTopOneBottom() Layout {
 		},
 		Steps: []LayoutStep{
 			{Action: ActionSplit, Direction: Down},
-			{Action: ActionFocus, Direction: Up},
+			{Action: ActionFocus, Direction: Previous},
 			{Action: ActionSplit, Direction: Right},
 			{Action: ActionSplit, Direction: Right},
-			{Action: ActionFocus, Direction: Left},
-			{Action: ActionFocus, Direction: Left},
+			{Action: ActionFocus, Direction: Previous},
+			{Action: ActionFocus, Direction: Previous},
 			{Action: ActionEqualize},
 		},
 		PaneCount:  4,
-		FinalFocus: Left,
+		FinalFocus: Previous,
 	}
 }

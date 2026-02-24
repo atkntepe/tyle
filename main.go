@@ -18,10 +18,11 @@ var version = "dev"
 
 func main() {
 	rootCmd := &cobra.Command{
-		Use:     "tyle",
-		Short:   "Layout manager for Ghostty terminal",
-		Version: version,
-		RunE:    runTUI,
+		Use:          "tyle",
+		Short:        "Layout manager for Ghostty terminal",
+		Version:      version,
+		RunE:         runTUI,
+		SilenceUsage: true,
 	}
 
 	rootCmd.AddCommand(applyCmd())
@@ -151,13 +152,12 @@ func initCmd() *cobra.Command {
 			fmt.Println()
 			fmt.Println("This binds Cmd+Shift+L to launch the layout picker.")
 			fmt.Println()
-			fmt.Println("For full layout support, also add these directional focus bindings:")
+			fmt.Println("Optional: directional focus bindings (for custom layouts):")
 			fmt.Println()
 			fmt.Println("  keybind = cmd+alt+left=goto_split:left")
 			fmt.Println("  keybind = cmd+alt+right=goto_split:right")
 			fmt.Println("  keybind = cmd+alt+up=goto_split:top")
 			fmt.Println("  keybind = cmd+alt+down=goto_split:bottom")
-			fmt.Println("  keybind = cmd+shift+e=equalize_splits")
 		},
 	}
 }
