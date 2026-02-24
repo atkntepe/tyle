@@ -2,6 +2,7 @@ package tui
 
 import (
 	"strings"
+	"unicode/utf8"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -9,10 +10,7 @@ import (
 	"github.com/primefaces/tyle/internal/layout"
 )
 
-const (
-	cardOuterWidth = 20
-	maxColumns     = 4
-)
+const maxColumns = 4
 
 type Model struct {
 	layouts   []layout.Layout
@@ -31,11 +29,38 @@ func NewModel(layouts []layout.Layout) Model {
 	}
 }
 
+func (m Model) cardOuterWidth() int {
+	maxW := 0
+	for _, l := range m.layouts {
+		for _, line := range l.Preview {
+			w := utf8.RuneCountInString(line)
+			if w > maxW {
+				maxW = w
+			}
+		}
+	}
+	return maxW + 4 + 1
+}
+
+func (m Model) cardOuterHeight() int {
+	maxH := 0
+	for _, l := range m.layouts {
+		if len(l.Preview) > maxH {
+			maxH = len(l.Preview)
+		}
+	}
+	return maxH + 2
+}
+
 func (m Model) cols() int {
 	if m.width <= 0 {
 		return 3
 	}
-	c := m.width / cardOuterWidth
+	ow := m.cardOuterWidth()
+	if ow <= 0 {
+		return 3
+	}
+	c := m.width / ow
 	if c < 1 {
 		return 1
 	}
@@ -108,9 +133,9 @@ func (m Model) ensureVisible(cursor int) int {
 
 	headerHeight := 3
 	helpHeight := 3
-	cardHeight := 8
+	ch := m.cardOuterHeight()
 	available := m.height - headerHeight - helpHeight
-	visibleRows := available / cardHeight
+	visibleRows := available / ch
 	if visibleRows < 1 {
 		visibleRows = 1
 	}
@@ -140,8 +165,8 @@ func (m Model) View() string {
 		available = 1
 	}
 
-	cardHeight := 8
-	startLine := m.scroll * cardHeight
+	ch := m.cardOuterHeight()
+	startLine := m.scroll * ch
 	if startLine > len(gridLines) {
 		startLine = len(gridLines)
 	}
