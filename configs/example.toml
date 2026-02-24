@@ -1,0 +1,41 @@
+# ~/.config/tyle/config.toml
+
+[settings]
+# Delay between split actions in milliseconds
+# Increase if splits aren't registering on your machine
+delay_between_splits_ms = 200
+
+# Run equalize_splits after applying layout
+auto_equalize = true
+
+# Number of columns in the picker grid
+picker_columns = 3
+
+# Ghostty config path (auto-detected if not set)
+# ghostty_config_path = "/Users/you/Library/Application Support/com.mitchellh.ghostty/config"
+
+# Define custom layouts
+[[custom_layouts]]
+id = "dev-fullstack"
+name = "Fullstack Dev"
+description = "Editor, server, and logs"
+pane_count = 3
+preview = [
+  "┌──────┬──────┐",
+  "│      │  B   │",
+  "│  A   ├──────┤",
+  "│      │  C   │",
+  "└──────┴──────┘",
+]
+
+  [[custom_layouts.steps]]
+  action = "split"
+  direction = "right"
+
+  [[custom_layouts.steps]]
+  action = "split"
+  direction = "down"
+
+  [[custom_layouts.steps]]
+  action = "focus"
+  direction = "left"
