@@ -10,12 +10,16 @@ var (
 	cardStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(gray).
-			Padding(0, 1)
+			Padding(0, 1).
+			Width(17).
+			Height(5)
 
 	selectedCardStyle = lipgloss.NewStyle().
 				Border(lipgloss.RoundedBorder()).
 				BorderForeground(cyan).
-				Padding(0, 1)
+				Padding(0, 1).
+				Width(17).
+				Height(5)
 
 	previewStyle = lipgloss.NewStyle().
 			Foreground(gray)

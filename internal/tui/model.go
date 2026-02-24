@@ -9,7 +9,10 @@ import (
 	"github.com/primefaces/tyle/internal/layout"
 )
 
-const cardOuterWidth = 20
+const (
+	cardOuterWidth = 20
+	maxColumns     = 4
+)
 
 type Model struct {
 	layouts   []layout.Layout
@@ -35,6 +38,9 @@ func (m Model) cols() int {
 	c := m.width / cardOuterWidth
 	if c < 1 {
 		return 1
+	}
+	if c > maxColumns {
+		return maxColumns
 	}
 	return c
 }
