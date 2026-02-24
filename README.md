@@ -6,11 +6,14 @@ Layout manager for [Ghostty](https://ghostty.org) terminal. Pick a split layout 
 
 ## Install
 
+Download a binary from [Releases](https://github.com/atkntepe/tyle/releases).
+
+Or install with Go:
+
 ```bash
+brew install go
 go install github.com/atkntepe/tyle@latest
 ```
-
-Or download a binary from [Releases](https://github.com/atkntepe/tyle/releases).
 
 ## Setup
 
@@ -27,14 +30,23 @@ You also need to grant **Accessibility** permission to your terminal in System S
 ## Usage
 
 ```bash
-tyle              # open the layout picker
-tyle list         # list available layouts
-tyle apply <id>   # apply a layout directly
-tyle add          # create a custom layout interactively
-tyle hide <id>    # hide a layout from the picker
-tyle show <id>    # unhide a layout
-tyle reset        # close all splits
+tyle                  # open the layout picker
+tyle apply <id>       # apply a layout directly
+tyle apply <id> --dry-run  # preview steps without executing
+tyle list             # list available layouts
+tyle list --all       # include hidden layouts
 ```
+
+### Custom layouts
+
+```bash
+tyle add              # create a custom layout interactively
+tyle hide <id>        # hide a layout from the picker
+tyle show <id>        # unhide a layout
+tyle reset            # close all splits
+```
+
+`tyle add` walks you through creating a layout by specifying the number of columns and rows per column.
 
 ## Build from source
 
