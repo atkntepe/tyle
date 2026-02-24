@@ -33,6 +33,12 @@ func EnsureGhosttyFocused() error {
 	return cmd.Run()
 }
 
+func CheckAccessibilityPermission() bool {
+	cmd := exec.Command("osascript", "-e",
+		`tell application "System Events" to get name of first process`)
+	return cmd.Run() == nil
+}
+
 func IsGhosttyRunning() bool {
 	cmd := exec.Command("osascript", "-e",
 		`tell application "System Events" to (name of processes) contains "Ghostty"`)

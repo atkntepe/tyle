@@ -63,12 +63,21 @@ func runTUI(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to read Ghostty config: %w", err)
 	}
 
-	fmt.Printf("Applying layout: %s\n", m.Selected().Name)
-	return engine.ExecuteLayout(*m.Selected(), bindings, cfg.Settings.DelayBetweenSplitsMs)
+	fmt.Printf("Applying layout: %s...\n", m.Selected().Name)
+	time.Sleep(200 * time.Millisecond)
+
+	if err := engine.ExecuteLayout(*m.Selected(), bindings, cfg.Settings.DelayBetweenSplitsMs); err != nil {
+		return err
+	}
+
+	fmt.Println("Done!")
+	return nil
 }
 
 func applyCmd() *cobra.Command {
-	return &cobra.Command{
+	var dryRun bool
+
+	cmd := &cobra.Command{
 		Use:   "apply [layout-id]",
 		Short: "Apply a layout directly without the picker",
 		Args:  cobra.ExactArgs(1),
@@ -88,10 +97,31 @@ func applyCmd() *cobra.Command {
 				return fmt.Errorf("layout '%s' not found — run 'tyle list' to see available layouts", args[0])
 			}
 
+			if dryRun {
+				fmt.Printf("Layout: %s (%d panes)\n\n", target.Name, target.PaneCount)
+				fmt.Println("Steps:")
+				for i, step := range target.Steps {
+					switch step.Action {
+					case layout.ActionSplit:
+						fmt.Printf("  %d. Split %s\n", i+1, step.Direction)
+					case layout.ActionFocus:
+						fmt.Printf("  %d. Focus %s\n", i+1, step.Direction)
+					case layout.ActionEqualize:
+						fmt.Printf("  %d. Equalize splits\n", i+1)
+					case layout.ActionDelay:
+						fmt.Printf("  %d. Delay %dms\n", i+1, step.DelayMs)
+					}
+				}
+				return nil
+			}
+
 			bindings, _ := engine.ParseGhosttyKeybindings(engine.GhosttyConfigPath())
 			return engine.ExecuteLayout(*target, bindings, cfg.Settings.DelayBetweenSplitsMs)
 		},
 	}
+
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print the keystroke sequence without executing")
+	return cmd
 }
 
 func listCmd() *cobra.Command {

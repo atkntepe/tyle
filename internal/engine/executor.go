@@ -7,7 +7,42 @@ import (
 	"github.com/primefaces/tyle/internal/layout"
 )
 
+func ValidateBindings(l layout.Layout, bindings map[string]KeyCombo) []string {
+	var missing []string
+	for _, step := range l.Steps {
+		var action string
+		switch step.Action {
+		case layout.ActionSplit:
+			action = fmt.Sprintf("new_split:%s", step.Direction)
+		case layout.ActionFocus:
+			action = fmt.Sprintf("goto_split:%s", step.Direction)
+		case layout.ActionEqualize:
+			action = "equalize_splits"
+		default:
+			continue
+		}
+		if _, ok := bindings[action]; !ok {
+			missing = append(missing, action)
+		}
+	}
+	return missing
+}
+
 func ExecuteLayout(l layout.Layout, bindings map[string]KeyCombo, delayMs int) error {
+	if !CheckAccessibilityPermission() {
+		return fmt.Errorf("accessibility permission required — grant access in System Settings > Privacy & Security > Accessibility")
+	}
+
+	missing := ValidateBindings(l, bindings)
+	if len(missing) > 0 {
+		msg := "missing Ghostty keybindings for this layout:\n"
+		for _, m := range missing {
+			msg += fmt.Sprintf("  - %s\n", m)
+		}
+		msg += "\nAdd these to your Ghostty config. Run 'tyle init' for instructions."
+		return fmt.Errorf("%s", msg)
+	}
+
 	if !IsGhosttyRunning() {
 		return fmt.Errorf("ghostty is not running")
 	}
