@@ -20,13 +20,3 @@ checksum:
 
 changelog:
   sort: asc
-
-brews:
-  - repository:
-      owner: atkntepe
-      name: homebrew-tap
-    homepage: https://github.com/atkntepe/tyle
-    description: Layout manager for Ghostty terminal
-    license: MIT
-    install: |
-      bin.install "tyle"
