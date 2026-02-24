@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
@@ -9,11 +8,11 @@ import (
 	"github.com/primefaces/tyle/internal/layout"
 )
 
-func renderGrid(layouts []layout.Layout, cursor int) string {
+func renderGrid(layouts []layout.Layout, cursor int, cols int) string {
 	var rows []string
 
-	for i := 0; i < len(layouts); i += columns {
-		end := i + columns
+	for i := 0; i < len(layouts); i += cols {
+		end := i + cols
 		if end > len(layouts) {
 			end = len(layouts)
 		}
@@ -32,18 +31,13 @@ func renderGrid(layouts []layout.Layout, cursor int) string {
 
 func renderCard(l layout.Layout, isSelected bool) string {
 	style := cardStyle
-	nameStyle := cardTitleStyle
+	pvStyle := previewStyle
 
 	if isSelected {
 		style = selectedCardStyle
-		nameStyle = selectedCardTitleStyle
+		pvStyle = selectedPreviewStyle
 	}
 
-	name := nameStyle.Render(l.Name)
-	preview := previewStyle.Render(strings.Join(l.Preview, "\n"))
-	info := paneCountStyle.Render(fmt.Sprintf("%d panes", l.PaneCount))
-
-	content := lipgloss.JoinVertical(lipgloss.Left, name, "", preview, "", info)
-
-	return style.Render(content)
+	preview := pvStyle.Render(strings.Join(l.Preview, "\n"))
+	return style.Render(preview)
 }

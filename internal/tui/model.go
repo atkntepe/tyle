@@ -1,13 +1,15 @@
 package tui
 
 import (
+	"strings"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
 	"github.com/primefaces/tyle/internal/layout"
 )
 
-const columns = 3
+const cardOuterWidth = 20
 
 type Model struct {
 	layouts   []layout.Layout
@@ -16,6 +18,7 @@ type Model struct {
 	cancelled bool
 	width     int
 	height    int
+	scroll    int
 }
 
 func NewModel(layouts []layout.Layout) Model {
@@ -23,6 +26,17 @@ func NewModel(layouts []layout.Layout) Model {
 		layouts: layouts,
 		cursor:  0,
 	}
+}
+
+func (m Model) cols() int {
+	if m.width <= 0 {
+		return 3
+	}
+	c := m.width / cardOuterWidth
+	if c < 1 {
+		return 1
+	}
+	return c
 }
 
 func (m Model) Init() tea.Cmd {
@@ -35,9 +49,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
+		m.scroll = m.ensureVisible(m.cursor)
 		return m, nil
 
 	case tea.KeyMsg:
+		cols := m.cols()
+
 		switch msg.String() {
 
 		case "ctrl+c", "q", "esc":
@@ -59,30 +76,83 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "up", "k":
-			if m.cursor-columns >= 0 {
-				m.cursor -= columns
+			if m.cursor-cols >= 0 {
+				m.cursor -= cols
 			}
 
 		case "down", "j":
-			if m.cursor+columns < len(m.layouts) {
-				m.cursor += columns
+			if m.cursor+cols < len(m.layouts) {
+				m.cursor += cols
 			}
 		}
+
+		m.scroll = m.ensureVisible(m.cursor)
 	}
 
 	return m, nil
 }
 
+func (m Model) ensureVisible(cursor int) int {
+	if m.height <= 0 {
+		return 0
+	}
+
+	cols := m.cols()
+	row := cursor / cols
+
+	headerHeight := 3
+	helpHeight := 3
+	cardHeight := 8
+	available := m.height - headerHeight - helpHeight
+	visibleRows := available / cardHeight
+	if visibleRows < 1 {
+		visibleRows = 1
+	}
+
+	scroll := m.scroll
+	if row < scroll {
+		scroll = row
+	}
+	if row >= scroll+visibleRows {
+		scroll = row - visibleRows + 1
+	}
+	return scroll
+}
+
 func (m Model) View() string {
 	header := headerStyle.Render("⊞ tyle")
-	grid := renderGrid(m.layouts, m.cursor)
+
+	cols := m.cols()
+	grid := renderGrid(m.layouts, m.cursor, cols)
+
+	gridLines := strings.Split(grid, "\n")
+
+	headerHeight := 3
+	helpHeight := 3
+	available := m.height - headerHeight - helpHeight
+	if available < 1 {
+		available = 1
+	}
+
+	cardHeight := 8
+	startLine := m.scroll * cardHeight
+	if startLine > len(gridLines) {
+		startLine = len(gridLines)
+	}
+	endLine := startLine + available
+	if endLine > len(gridLines) {
+		endLine = len(gridLines)
+	}
+
+	visibleGrid := strings.Join(gridLines[startLine:endLine], "\n")
+
 	help := helpStyle.Render(
 		helpKeyStyle.Render("←→↑↓") + " navigate  " +
 			helpKeyStyle.Render("enter") + " select  " +
-			helpKeyStyle.Render("esc") + " cancel  " +
-			helpKeyStyle.Render("q") + " quit",
+			helpKeyStyle.Render("esc") + " cancel",
 	)
-	return lipgloss.JoinVertical(lipgloss.Left, header, grid, help)
+
+	return lipgloss.JoinVertical(lipgloss.Left, header, visibleGrid, help)
 }
 
 func (m Model) Selected() *layout.Layout {
