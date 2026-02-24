@@ -15,10 +15,11 @@ type Config struct {
 }
 
 type Settings struct {
-	DelayBetweenSplitsMs int    `toml:"delay_between_splits_ms"`
-	AutoEqualize         bool   `toml:"auto_equalize"`
-	PickerColumns        int    `toml:"picker_columns"`
-	GhosttyConfigPath    string `toml:"ghostty_config_path"`
+	DelayBetweenSplitsMs int      `toml:"delay_between_splits_ms"`
+	AutoEqualize         bool     `toml:"auto_equalize"`
+	PickerColumns        int      `toml:"picker_columns"`
+	GhosttyConfigPath    string   `toml:"ghostty_config_path,omitempty"`
+	HiddenLayouts        []string `toml:"hidden_layouts,omitempty"`
 }
 
 type CustomLayout struct {
@@ -32,8 +33,8 @@ type CustomLayout struct {
 
 type CustomLayoutStep struct {
 	Action    string `toml:"action"`
-	Direction string `toml:"direction"`
-	DelayMs   int    `toml:"delay_ms"`
+	Direction string `toml:"direction,omitempty"`
+	DelayMs   int    `toml:"delay_ms,omitempty"`
 }
 
 func DefaultConfig() Config {
@@ -64,6 +65,78 @@ func Load() Config {
 	}
 
 	return cfg
+}
+
+func Save(cfg Config) error {
+	path := ConfigPath()
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		return err
+	}
+
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	return toml.NewEncoder(f).Encode(cfg)
+}
+
+func FromLayout(l layout.Layout) CustomLayout {
+	var steps []CustomLayoutStep
+	for _, s := range l.Steps {
+		steps = append(steps, CustomLayoutStep{
+			Action:    string(s.Action),
+			Direction: string(s.Direction),
+			DelayMs:   s.DelayMs,
+		})
+	}
+	return CustomLayout{
+		ID:          l.ID,
+		Name:        l.Name,
+		Description: l.Description,
+		Preview:     l.Preview,
+		PaneCount:   l.PaneCount,
+		Steps:       steps,
+	}
+}
+
+func (c *Config) AddLayout(cl CustomLayout) {
+	for i, existing := range c.CustomLayouts {
+		if existing.ID == cl.ID {
+			c.CustomLayouts[i] = cl
+			return
+		}
+	}
+	c.CustomLayouts = append(c.CustomLayouts, cl)
+}
+
+func (c *Config) HideLayout(id string) {
+	for _, h := range c.Settings.HiddenLayouts {
+		if h == id {
+			return
+		}
+	}
+	c.Settings.HiddenLayouts = append(c.Settings.HiddenLayouts, id)
+}
+
+func (c *Config) ShowLayout(id string) {
+	var filtered []string
+	for _, h := range c.Settings.HiddenLayouts {
+		if h != id {
+			filtered = append(filtered, h)
+		}
+	}
+	c.Settings.HiddenLayouts = filtered
+}
+
+func (c Config) IsHidden(id string) bool {
+	for _, h := range c.Settings.HiddenLayouts {
+		if h == id {
+			return true
+		}
+	}
+	return false
 }
 
 func (c Config) ToLayouts() []layout.Layout {
