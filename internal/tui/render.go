@@ -6,7 +6,7 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/primefaces/tyle/internal/layout"
+	"github.com/atkntepe/tyle/internal/layout"
 )
 
 type cardDimensions struct {

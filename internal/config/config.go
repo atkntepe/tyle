@@ -6,7 +6,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 
-	"github.com/primefaces/tyle/internal/layout"
+	"github.com/atkntepe/tyle/internal/layout"
 )
 
 type Config struct {

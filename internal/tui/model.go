@@ -7,7 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/primefaces/tyle/internal/layout"
+	"github.com/atkntepe/tyle/internal/layout"
 )
 
 const maxColumns = 4

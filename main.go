@@ -11,10 +11,10 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 
-	"github.com/primefaces/tyle/internal/config"
-	"github.com/primefaces/tyle/internal/engine"
-	"github.com/primefaces/tyle/internal/layout"
-	"github.com/primefaces/tyle/internal/tui"
+	"github.com/atkntepe/tyle/internal/config"
+	"github.com/atkntepe/tyle/internal/engine"
+	"github.com/atkntepe/tyle/internal/layout"
+	"github.com/atkntepe/tyle/internal/tui"
 )
 
 var version = "dev"

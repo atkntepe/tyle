@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/primefaces/tyle/internal/layout"
+	"github.com/atkntepe/tyle/internal/layout"
 )
 
 func ValidateBindings(l layout.Layout, bindings map[string]KeyCombo) []string {

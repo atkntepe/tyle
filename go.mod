@@ -1,4 +1,4 @@
-module github.com/primefaces/tyle
+module github.com/atkntepe/tyle
 
 go 1.25.0
 
